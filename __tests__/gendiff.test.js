@@ -1,4 +1,4 @@
-import {fileURLToPath} from 'url';
+import { fileURLToPath } from 'url';
 import fs from 'fs';
 import path from 'path';
 import gendiff from '../src/index.js';
@@ -12,9 +12,7 @@ test('gendiff', () => {
   const filepath2 = path.resolve(__dirname, fixtureDir, 'file2.json');
   const expectedPath = path.join(__dirname, fixtureDir, 'stylish.txt');
 
-  const expected  = fs.readFileSync(expectedPath, 'utf-8');
+  const expected = fs.readFileSync(expectedPath, 'utf-8');
 
   expect(gendiff(filepath1, filepath2)).toEqual(expected.trim());
 });
-
-
