@@ -39,6 +39,8 @@ const buildDiff = (dataset1, dataset2) => {
     if (!_.has(dataset1, key) && _.has(dataset2, key)) {
       return `  + ${key}: ${value2}`;
     }
+
+    throw new Error('Unknown node type');
   })
     .join('\n');
 
