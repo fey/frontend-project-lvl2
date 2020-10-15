@@ -1,15 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
+import parse from './parsers.js';
 
 const getFileData = (filePath) => {
-  const ext = path.extname(filePath);
+  const ext = path.extname(filePath).substr(1);
   const content = fs.readFileSync(filePath, 'utf8');
 
   return { content, ext };
 };
 
-const jsonParser = (data) => JSON.parse(data);
 
 const buildDiff = (dataset1, dataset2) => {
   const keys = _.union(_.keys(dataset1), _.keys(dataset2)).sort();
@@ -51,8 +51,8 @@ export default (filepath1, filepath2) => {
   const fileData1 = getFileData(filepath1);
   const fileData2 = getFileData(filepath2);
 
-  const data1 = jsonParser(fileData1.content);
-  const data2 = jsonParser(fileData2.content);
+  const data1 = parse(fileData1.content, fileData1.ext);
+  const data2 = parse(fileData2.content, fileData2.ext);
 
   const diff = buildDiff(data1, data2);
 
