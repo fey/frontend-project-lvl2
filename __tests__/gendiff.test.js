@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 test.each([
   ['yml'],
   ['json'],
-  ['ini']
+  ['ini'],
 ])('gendiff with %s', (fileFormat) => {
   const filepath1 = path.resolve(__dirname, fixtureDir, `file1.${fileFormat}`);
   const filepath2 = path.resolve(__dirname, fixtureDir, `file2.${fileFormat}`);

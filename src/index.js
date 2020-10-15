@@ -10,7 +10,6 @@ const getFileData = (filePath) => {
   return { content, ext };
 };
 
-
 const buildDiff = (dataset1, dataset2) => {
   const keys = _.union(_.keys(dataset1), _.keys(dataset2)).sort();
 
