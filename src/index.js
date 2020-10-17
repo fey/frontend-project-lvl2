@@ -17,36 +17,37 @@ const buildDiff = (dataset1, dataset2) => {
     const value1 = _.get(dataset1, key);
     const value2 = _.get(dataset2, key);
 
-    // if (_.has(dataset1, key) && _.has(dataset2, key)
-    // && _.isPlainObject(value1) _.isPlainObject(value2)) {
-
-    // }
     if (_.has(dataset1, key) && _.has(dataset2, key)
-      && _.isEqual(value1, value2)) {
-      return `    ${key}: ${value1}`;
+      && _.isPlainObject(value1) && _.isPlainObject(value2)) {
+      return { name: key, type: 'nested', children: buildDiff(value1, value2) };
     }
+
+    if (_.has(dataset1, key) && _.has(dataset2, key) && _.isEqual(value1, value2)) {
+      return { name: key, type: 'unchanged', value: value1 };
+    }
+
     if (_.has(dataset1, key) && _.has(dataset2, key)
       && !_.isEqual(value1, value2)) {
-      return [`  - ${key}: ${value1}`, `  + ${key}: ${value2}`].join('\n');
+      return {
+        name: key, type: 'changed', oldValue: value1, newValue: value2,
+      };
     }
-    if (_.has(dataset1, key) && _.has(dataset2, key)) {
-      return `    ${key}: ${value1}`;
-    }
+
     if (_.has(dataset1, key) && !_.has(dataset2, key)) {
-      return `  - ${key}: ${value1}`;
+      return { name: key, type: 'deleted', oldValue: value1 };
     }
+
     if (!_.has(dataset1, key) && _.has(dataset2, key)) {
-      return `  + ${key}: ${value2}`;
+      return { name: key, type: 'added', newValue: value2 };
     }
 
     throw new Error('Unknown node type');
-  })
-    .join('\n');
+  });
 
-  return `{\n${diff}\n}`;
+  return diff;
 };
 
-export default (filepath1, filepath2) => {
+const genDiff = (filepath1, filepath2) => {
   const fileData1 = getFileData(filepath1);
   const fileData2 = getFileData(filepath2);
 
@@ -57,3 +58,5 @@ export default (filepath1, filepath2) => {
 
   return diff;
 };
+
+export default genDiff;
