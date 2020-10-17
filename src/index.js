@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
 import parse from './parsers.js';
+import format from './formatters.js';
 
 const getFileData = (filePath) => {
   const ext = path.extname(filePath).substr(1);
@@ -47,7 +48,7 @@ const buildDiff = (dataset1, dataset2) => {
   return diff;
 };
 
-const genDiff = (filepath1, filepath2) => {
+const genDiff = (filepath1, filepath2, formatter = 'stylish') => {
   const fileData1 = getFileData(filepath1);
   const fileData2 = getFileData(filepath2);
 
@@ -56,7 +57,7 @@ const genDiff = (filepath1, filepath2) => {
 
   const diff = buildDiff(data1, data2);
 
-  return diff;
+  return format(diff, formatter);
 };
 
 export default genDiff;
