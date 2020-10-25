@@ -2,25 +2,25 @@ import _ from 'lodash';
 
 const makeIndent = (level) => '    '.repeat(level);
 
+const stringify = (value, depthLevel) => {
+  if (_.isArray(value)) {
+    return `[ ${value.join(', ')} ]`;
+  }
+
+  if (!_.isPlainObject(value)) {
+    return value;
+  }
+
+  const indent = makeIndent(depthLevel + 1);
+  const indentCloseBracket = makeIndent(depthLevel);
+  const formatted = Object.keys(value)
+    .map((key) => `${indent}${key}: ${stringify(value[key], depthLevel + 1)}`)
+    .join('\n');
+
+  return `{\n${formatted}\n${indentCloseBracket}}`;
+};
+
 const format = (diffTree) => {
-  const stringify = (value, depthLevel) => {
-    if (_.isArray(value)) {
-      return `[ ${value.join(', ')} ]`;
-    }
-
-    if (!_.isPlainObject(value)) {
-      return value;
-    }
-
-    const indent = makeIndent(depthLevel + 1);
-    const indentCloseBracket = makeIndent(depthLevel);
-    const formatted = Object.keys(value)
-      .map((key) => `${indent}${key}: ${stringify(value[key], depthLevel + 1)}`)
-      .join('\n');
-
-    return `{\n${formatted}\n${indentCloseBracket}}`;
-  };
-
   const iter = (nodes, depthLevel = 0) => {
     const formatted = nodes.map(({
       name,
@@ -52,11 +52,9 @@ const format = (diffTree) => {
 
       if (type === 'nested') {
         const indentCloseBracket = makeIndent(depthLevel + 1);
+        const lines = iter(children, depthLevel + 1).join('\n');
         return [
-          `${indent}    ${name}: {`,
-          iter(children, depthLevel + 1).join('\n'),
-          `${indentCloseBracket}}`,
-        ].join('\n');
+          `${indent}    ${name}: {`, lines, `${indentCloseBracket}}`].join('\n');
       }
 
       throw new Error('Unknown node type');
