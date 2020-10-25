@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import commander from 'commander';
-import gendiff from '../src';
+import gendiff from '../src/index.js';
 
 commander.program
   .description('Compares two configuration files and shows a difference.')
@@ -10,6 +10,7 @@ commander.program
 
 commander.program.parse();
 
-const [filepath1, filepath2, type] = commander.program.args;
+const [filepath1, filepath2] = commander.program.args;
+const { format } = commander.program;
 
-console.log(gendiff(filepath1, filepath2, type));
+console.log(gendiff(filepath1, filepath2, format));

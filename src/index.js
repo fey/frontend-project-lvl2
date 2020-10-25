@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
-import parse from './parsers';
-import format from './formatters';
+import parse from './parsers/index.js';
+import format from './formatters/index.js';
 
 const getFileData = (filePath) => {
   const ext = path.extname(filePath).substr(1);
