@@ -18,31 +18,49 @@ const buildDiff = (dataset1, dataset2) => {
     const oldValue = _.get(dataset1, key);
     const newValue = _.get(dataset2, key);
 
-    if (_.has(dataset1, key) && _.has(dataset2, key)
-      && _.isPlainObject(oldValue) && _.isPlainObject(newValue)) {
-      return { name: key, type: 'nested', children: buildDiff(oldValue, newValue) };
+    const mapping = [
+      {
+        condition: _.has(dataset1, key)
+          && _.has(dataset2, key)
+          && _.isPlainObject(oldValue)
+          && _.isPlainObject(newValue),
+        buildNode: () => ({
+          name: key, type: 'nested', children: buildDiff(oldValue, newValue),
+        }),
+      },
+      {
+        condition: _.has(dataset1, key) && _.has(dataset2, key) && _.isEqual(oldValue, newValue),
+        buildNode: () => ({
+          name: key, type: 'unchanged', oldValue,
+        }),
+      },
+      {
+        condition: (_.has(dataset1, key) && _.has(dataset2, key) && !_.isEqual(oldValue, newValue)),
+        buildNode: () => ({
+          name: key, type: 'changed', oldValue, newValue,
+        }),
+      },
+      {
+        condition: _.has(dataset1, key) && !_.has(dataset2, key),
+        buildNode: () => ({
+          name: key, type: 'deleted', oldValue,
+        }),
+      },
+      {
+        condition: !_.has(dataset1, key) && _.has(dataset2, key),
+        buildNode: () => ({
+          name: key, type: 'added', newValue,
+        }),
+      },
+    ];
+
+    const { buildNode } = mapping.find(({ condition }) => condition);
+
+    if (buildNode === undefined) {
+      throw new Error('Unknown node type');
     }
 
-    if (_.has(dataset1, key) && _.has(dataset2, key) && _.isEqual(oldValue, newValue)) {
-      return { name: key, type: 'unchanged', oldValue };
-    }
-
-    if (_.has(dataset1, key) && _.has(dataset2, key)
-      && !_.isEqual(oldValue, newValue)) {
-      return {
-        name: key, type: 'changed', oldValue, newValue,
-      };
-    }
-
-    if (_.has(dataset1, key) && !_.has(dataset2, key)) {
-      return { name: key, type: 'deleted', oldValue };
-    }
-
-    if (!_.has(dataset1, key) && _.has(dataset2, key)) {
-      return { name: key, type: 'added', newValue };
-    }
-
-    throw new Error('Unknown node type');
+    return buildNode();
   });
 
   return diff;
