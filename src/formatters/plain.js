@@ -1,17 +1,18 @@
 import _ from 'lodash';
 
+const stringify = (value) => {
+  if (_.isPlainObject(value)) {
+    return '[complex value]';
+  }
+
+  if (_.isBoolean(value) || _.isNull(value)) {
+    return value;
+  }
+
+  return `'${value}'`;
+};
+
 const format = (diffTree) => {
-  const stringify = (value) => {
-    if (_.isPlainObject(value)) {
-      return '[complex value]';
-    }
-
-    if (_.isBoolean(value) || _.isNull(value)) {
-      return value;
-    }
-
-    return `'${value}'`;
-  };
   const iter = (nodes, ancestors = []) => {
     const formatted = nodes.map(({
       name,
