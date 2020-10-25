@@ -1,15 +1,15 @@
-import formatStylish from './formatters/stylish.js';
+import formatStylish from './stylish.js';
+import formatPlain from './plain.js';
+import formatJson from './json.js';
 
 const format = (diff, type = 'stylish') => {
   switch (type) {
     case 'stylish':
       return formatStylish(diff);
     case 'plain':
-      return null;
-      // return formatPlain(diff);
+      return formatPlain(diff);
     case 'json':
-      return null;
-      // return formatJson(diff);
+      return formatJson(diff);
     default:
       throw new Error('Unknown formatter type');
   }
