@@ -15,31 +15,31 @@ const buildDiff = (dataset1, dataset2) => {
   const keys = _.union(_.keys(dataset1), _.keys(dataset2)).sort();
 
   const diff = keys.map((key) => {
-    const value1 = _.get(dataset1, key);
-    const value2 = _.get(dataset2, key);
+    const oldValue = _.get(dataset1, key);
+    const newValue = _.get(dataset2, key);
 
     if (_.has(dataset1, key) && _.has(dataset2, key)
-      && _.isPlainObject(value1) && _.isPlainObject(value2)) {
-      return { name: key, type: 'nested', children: buildDiff(value1, value2) };
+      && _.isPlainObject(oldValue) && _.isPlainObject(newValue)) {
+      return { name: key, type: 'nested', children: buildDiff(oldValue, newValue) };
     }
 
-    if (_.has(dataset1, key) && _.has(dataset2, key) && _.isEqual(value1, value2)) {
-      return { name: key, type: 'unchanged', value: value1 };
+    if (_.has(dataset1, key) && _.has(dataset2, key) && _.isEqual(oldValue, newValue)) {
+      return { name: key, type: 'unchanged', oldValue };
     }
 
     if (_.has(dataset1, key) && _.has(dataset2, key)
-      && !_.isEqual(value1, value2)) {
+      && !_.isEqual(oldValue, newValue)) {
       return {
-        name: key, type: 'changed', oldValue: value1, newValue: value2,
+        name: key, type: 'changed', oldValue, newValue,
       };
     }
 
     if (_.has(dataset1, key) && !_.has(dataset2, key)) {
-      return { name: key, type: 'deleted', oldValue: value1 };
+      return { name: key, type: 'deleted', oldValue };
     }
 
     if (!_.has(dataset1, key) && _.has(dataset2, key)) {
-      return { name: key, type: 'added', newValue: value2 };
+      return { name: key, type: 'added', newValue };
     }
 
     throw new Error('Unknown node type');
