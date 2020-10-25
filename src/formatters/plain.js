@@ -35,8 +35,8 @@ const format = (diffTree) => {
 
       return mapping[type]();
     });
-    
-    return _.flattenDeep(_.compact(formatted));
+
+    return _(formatted).compact().flattenDeep().value();
   };
 
   const lines = iter(diffTree);
