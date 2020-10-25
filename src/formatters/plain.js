@@ -22,26 +22,21 @@ const format = (diffTree) => {
       children,
     }) => {
       const ascentryPath = [...ancestors, name].join('.');
-      if (type === 'changed') {
-        return `Property '${ascentryPath}' was updated. From ${stringify(oldValue)} to ${stringify(newValue)}`;
+      const mapping = {
+        changed: () => `Property '${ascentryPath}' was updated. From ${stringify(oldValue)} to ${stringify(newValue)}`,
+        added: () => `Property '${ascentryPath}' was added with value: ${stringify(newValue)}`,
+        deleted: () => `Property '${ascentryPath}' was removed`,
+        nested: () => iter(children, [...ancestors, name]),
+      };
+
+      if (!_.has(mapping, type)) {
+        return null;
       }
 
-      if (type === 'added') {
-        return `Property '${ascentryPath}' was added with value: ${stringify(newValue)}`;
-      }
-
-      if (type === 'deleted') {
-        return `Property '${ascentryPath}' was removed`;
-      }
-
-      if (type === 'nested') {
-        return iter(children, [...ancestors, name]);
-      }
-
-      return '';
+      return mapping[type]();
     });
-
-    return _.flattenDeep(formatted.filter(_.identity));
+    
+    return _.flattenDeep(_.compact(formatted));
   };
 
   const lines = iter(diffTree);
