@@ -13,31 +13,33 @@ const stringify = (value) => {
 };
 
 const format = (diffTree) => {
-  const iter = (nodes, ancestors = []) => {
-    const formatted = nodes.map(({
-      name,
-      type,
-      oldValue,
-      newValue,
-      children,
-    }) => {
-      const ascentryPath = [...ancestors, name].join('.');
-      const mapping = {
-        changed: () => `Property '${ascentryPath}' was updated. From ${stringify(oldValue)} to ${stringify(newValue)}`,
-        added: () => `Property '${ascentryPath}' was added with value: ${stringify(newValue)}`,
-        deleted: () => `Property '${ascentryPath}' was removed`,
-        nested: () => iter(children, [...ancestors, name]),
-      };
+  const iter = (nodes, ancestors = []) => (
+    _(nodes)
+      .map(({
+        name,
+        type,
+        oldValue,
+        newValue,
+        children,
+      }) => {
+        const ascentryPath = [...ancestors, name].join('.');
+        const mapping = {
+          changed: () => `Property '${ascentryPath}' was updated. From ${stringify(oldValue)} to ${stringify(newValue)}`,
+          added: () => `Property '${ascentryPath}' was added with value: ${stringify(newValue)}`,
+          deleted: () => `Property '${ascentryPath}' was removed`,
+          nested: () => iter(children, [...ancestors, name]),
+        };
 
-      if (!_.has(mapping, type)) {
-        return null;
-      }
+        if (!_.has(mapping, type)) {
+          return null;
+        }
 
-      return mapping[type]();
-    });
-
-    return _(formatted).compact().flattenDeep().value();
-  };
+        return mapping[type]();
+      })
+      .compact()
+      .flattenDeep()
+      .value()
+  );
 
   const lines = iter(diffTree);
 
