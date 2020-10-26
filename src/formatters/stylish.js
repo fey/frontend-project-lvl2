@@ -57,9 +57,9 @@ const format = (diffTree) => {
     return _.flattenDeep(lines);
   };
 
-  const formatted = iter(diffTree);
+  const lines = iter(diffTree);
 
-  return `{\n${formatted.join('\n')}\n}`;
+  return `{\n${lines.join('\n')}\n}`;
 };
 
 export default format;
