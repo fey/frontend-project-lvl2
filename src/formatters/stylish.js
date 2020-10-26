@@ -13,16 +13,16 @@ const stringify = (value, depthLevel) => {
 
   const indent = makeIndent(depthLevel + 1);
   const indentCloseBracket = makeIndent(depthLevel);
-  const formatted = Object.keys(value)
+  const renderedObject = Object.keys(value)
     .map((key) => `${indent}${key}: ${stringify(value[key], depthLevel + 1)}`)
     .join('\n');
 
-  return `{\n${formatted}\n${indentCloseBracket}}`;
+  return `{\n${renderedObject}\n${indentCloseBracket}}`;
 };
 
 const format = (diffTree) => {
   const iter = (nodes, depthLevel = 0) => {
-    const formatted = nodes.map(({
+    const lines = nodes.map(({
       name,
       type,
       oldValue,
@@ -40,8 +40,10 @@ const format = (diffTree) => {
         deleted: () => `${indent}  - ${name}: ${stringify(oldValue, depthLevel + 1)}`,
         nested: () => {
           const indentCloseBracket = makeIndent(depthLevel + 1);
-          const lines = iter(children, depthLevel + 1).join('\n');
-          return [`${indent}    ${name}: {`, lines, `${indentCloseBracket}}`].join('\n');
+          return [
+            `${indent}    ${name}: {`,
+            iter(children, depthLevel + 1),
+            `${indentCloseBracket}}`];
         },
       };
 
@@ -52,7 +54,7 @@ const format = (diffTree) => {
       return mapping[type]();
     });
 
-    return _.flattenDeep(formatted);
+    return _.flattenDeep(lines);
   };
 
   const formatted = iter(diffTree);
