@@ -1,6 +1,6 @@
 {
   "name": "@hexlet/code",
-  "main": "src/index.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "npx -n --experimental-vm-modules jest"
