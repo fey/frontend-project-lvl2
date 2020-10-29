@@ -12,7 +12,7 @@ const getFileData = (filePath) => {
 };
 
 const buildDiff = (dataset1, dataset2) => {
-  const keys = _.union(_.keys(dataset1), _.keys(dataset2)).sort();
+  const keys = _.union(_.keys(dataset1), _.keys(dataset2)).slice().sort();
 
   const diff = keys.map((key) => {
     const oldValue = _.get(dataset1, key);
