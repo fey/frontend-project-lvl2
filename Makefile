@@ -21,5 +21,7 @@ test-coverage:
 test-watch:
 	npm test -- --watchAll
 
-make link:
+link:
 	npm link
+
+setup: install link

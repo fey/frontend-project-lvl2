@@ -31,7 +31,7 @@ $ make lint # run eslint
 Usage example:
 
 ```sh
-$ make link
+$ make setup
 # plain
 $ gendiff --format plain path/to/file.yml another/path/file.json
 
