@@ -13,9 +13,25 @@ The capabilities of the utility:
 * Support for different input formats: yaml, json
 * Report generation as plain text, stylish and json
 
+### Requirements
+
+* NodeJS 14+
+
+### Installation
+
+Clone or fork repository
+
+```sh
+$ make install # install dependencies
+$ make test # run tests
+$ make lint # run eslint
+```
+
+
 Usage example:
 
 ```sh
+$ make link
 # plain
 $ gendiff --format plain path/to/file.yml another/path/file.json
 
@@ -41,27 +57,13 @@ $ gendiff filepath1.json filepath2.json
 }
 ```
 
-### Requirements
-
-* NodeJS 14+
-
-### Installation
-
-Clone or fork repository
-
-```sh
-$ make install # install dependencies
-$ make test # run tests
-$ make lint # run eslint
-```
-
 Importing
 
 ```js
 import genDiff from '@hexlet/code';
 
 const diff = genDiff(filepath1, filepath2);
-console.log(diff);```
+console.log(diff);
 ```
 
 ### asciinema

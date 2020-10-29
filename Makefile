@@ -20,3 +20,6 @@ test-coverage:
 
 test-watch:
 	npm test -- --watchAll
+
+make link:
+	npm link
