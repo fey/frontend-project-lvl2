@@ -5,11 +5,11 @@ const stringify = (value) => {
     return '[complex value]';
   }
 
-  if (_.isBoolean(value) || _.isNull(value)) {
-    return value;
+  if (_.isString(value)) {
+    return `'${value}'`;
   }
 
-  return `'${value}'`;
+  return value;
 };
 
 const format = (diffTree) => {
