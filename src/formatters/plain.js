@@ -13,33 +13,34 @@ const stringify = (value) => {
 };
 
 const format = (diffTree) => {
-  const iter = (nodes, ancestors = []) => (
-    _(nodes)
-      .map(({
-        name,
-        type,
-        oldValue,
-        newValue,
-        children,
-      }) => {
-        const ascentryPath = [...ancestors, name].join('.');
-        const mapping = {
-          changed: () => `Property '${ascentryPath}' was updated. From ${stringify(oldValue)} to ${stringify(newValue)}`,
-          added: () => `Property '${ascentryPath}' was added with value: ${stringify(newValue)}`,
-          deleted: () => `Property '${ascentryPath}' was removed`,
-          nested: () => iter(children, [...ancestors, name]),
-        };
+  const iter = (nodes, ancestors = []) => {
+    const formatted = nodes.map(({
+      name,
+      type,
+      oldValue,
+      newValue,
+      children,
+    }) => {
+      const ascentryPath = [...ancestors, name].join('.');
 
-        if (!_.has(mapping, type)) {
-          return null;
-        }
+      switch (type) {
+        case 'changed':
+          return `Property '${ascentryPath}' was updated. From ${stringify(oldValue)} to ${stringify(newValue)}`;
+        case 'added':
+          return `Property '${ascentryPath}' was added with value: ${stringify(newValue)}`;
+        case 'deleted':
+          return `Property '${ascentryPath}' was removed`;
+        case 'nested':
+          return iter(children, [...ancestors, name]);
+        case 'unchanged':
+          return '';
+        default:
+          throw new Error('Unknown node type');
+      }
+    });
 
-        return mapping[type]();
-      })
-      .compact()
-      .flattenDeep()
-      .value()
-  );
+    return _(formatted).compact().flattenDeep().value();
+  };
 
   const lines = iter(diffTree);
 

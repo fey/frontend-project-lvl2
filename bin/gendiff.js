@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import commander from 'commander';
-import gendiff from '../src/gendiff.js';
+import gendiff from '../src/index.js';
 
 const { program } = commander;
 
@@ -9,11 +9,7 @@ program
   .version('1.0.0')
   .arguments('<filepath1> <filepath2>')
   .option('-f, --format [type]', 'output format')
-  .parse();
-
-const [filepath1, filepath2] = program.args;
-const { format } = program;
-
-const diff = gendiff(filepath1, filepath2, format);
-
-console.log(diff);
+  .action((filepath1, filepath2, { format }) => {
+    console.log(gendiff(filepath1, filepath2, format));
+  })
+  .parse(process.argv);

@@ -1,16 +1,12 @@
 import YAML from 'yaml';
-import ini from 'ini';
 
 const parseJson = (data) => JSON.parse(data);
 const parseYaml = (data) => YAML.parse(data);
-const parseIni = (data) => ini.parse(data);
 
-const parse = (data, parser = 'json') => {
+const parse = (data, parser) => {
   switch (parser) {
     case 'json':
       return parseJson(data);
-    case 'ini':
-      return parseIni(data);
     case 'yml':
     case 'yaml':
       return parseYaml(data);

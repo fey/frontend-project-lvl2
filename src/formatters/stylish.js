@@ -30,28 +30,26 @@ const format = (diffTree) => {
       children,
     }) => {
       const indent = makeIndent(depthLevel);
-      const mapping = {
-        unchanged: () => `${indent}    ${name}: ${stringify(oldValue, depthLevel + 1)}`,
-        changed: () => [
-          `${indent}  - ${name}: ${stringify(oldValue, depthLevel + 1)}`,
-          `${indent}  + ${name}: ${stringify(newValue, depthLevel + 1)}`,
-        ].join('\n'),
-        added: () => `${indent}  + ${name}: ${stringify(newValue, depthLevel + 1)}`,
-        deleted: () => `${indent}  - ${name}: ${stringify(oldValue, depthLevel + 1)}`,
-        nested: () => {
-          const indentCloseBracket = makeIndent(depthLevel + 1);
+      switch (type) {
+        case 'deleted':
+          return `${indent}  - ${name}: ${stringify(oldValue, depthLevel + 1)}`;
+        case 'added':
+          return `${indent}  + ${name}: ${stringify(newValue, depthLevel + 1)}`;
+        case 'unchanged':
+          return `${indent}    ${name}: ${stringify(oldValue, depthLevel + 1)}`;
+        case 'changed':
+          return [
+            `${indent}  - ${name}: ${stringify(oldValue, depthLevel + 1)}`,
+            `${indent}  + ${name}: ${stringify(newValue, depthLevel + 1)}`,
+          ];
+        case 'nested':
           return [
             `${indent}    ${name}: {`,
             iter(children, depthLevel + 1),
-            `${indentCloseBracket}}`];
-        },
-      };
-
-      if (!_.has(mapping, type)) {
-        throw new Error('Unknown node type');
+            `${makeIndent(depthLevel + 1)}}`];
+        default:
+          throw new Error('Unknown node type');
       }
-
-      return mapping[type]();
     });
 
     return _.flattenDeep(lines);
