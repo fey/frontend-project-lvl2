@@ -5,36 +5,32 @@ import gendiff from '../src/gendiff.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
+const read = (filePath) => fs.readFileSync(filePath, 'utf-8').trim();
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 
-describe('test gendiff', () => {
-  test('default formatter with json', () => {
-    const filepath1 = getFixturePath('file1.json');
-    const filepath2 = getFixturePath('file2.json');
-    const expectedPath = getFixturePath('stylish.txt');
+const formats = [
+  'yml',
+  'json',
+];
+const formaterCases = [
+  ['stylish', 'stylish'],
+  ['plain', 'plain'],
+  ['json', 'json'],
+  [undefined, 'stylish'],
+];
 
-    const expected = fs.readFileSync(expectedPath, 'utf-8').trim();
+describe.each(formaterCases)('test with %s formatter, expected %s output', (formatter, expectedFileName) => {
+  let expectedOutput;
 
-    expect(gendiff(filepath1, filepath2)).toEqual(expected);
+  beforeEach(() => {
+    const expectedPath = getFixturePath(`${expectedFileName}.txt`);
+    expectedOutput = read(expectedPath);
   });
 
-  const dataTable = [
-    ['stylish', 'yml'],
-    ['stylish', 'json'],
-    ['plain', 'yml'],
-    ['plain', 'json'],
-    ['json', 'yml'],
-    ['json', 'json'],
-  ];
-
-  test.each(dataTable)('%s format with %s files', (formatter, fileFormat) => {
+  test.each(formats)('%s', (fileFormat) => {
     const filepath1 = getFixturePath(`file1.${fileFormat}`);
     const filepath2 = getFixturePath(`file2.${fileFormat}`);
-    const expectedPath = getFixturePath(`${formatter}.txt`);
 
-    const expected = fs.readFileSync(expectedPath, 'utf-8').trim();
-
-    expect(gendiff(filepath1, filepath2, formatter)).toEqual(expected);
+    expect(gendiff(filepath1, filepath2, formatter)).toEqual(expectedOutput);
   });
 });
