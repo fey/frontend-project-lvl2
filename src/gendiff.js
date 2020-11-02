@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import parse from './parsers/index.js';
 import format from './formatters/index.js';
-import buildDiff from './diff.js';
+import buildDiff from './differ.js';
 
 const getFileData = (filePath) => {
   const type = path.extname(filePath).substr(1);
