@@ -1,7 +1,7 @@
 .PHONY: test
 
 install:
-	npm install
+	npm ci
 
 lint:
 	npx eslint .
