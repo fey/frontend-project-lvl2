@@ -20,12 +20,12 @@ const formaterCases = [
 ];
 
 describe.each(formaterCases)('test with %s formatter, expected %s output', (formatter, expectedFileName) => {
-  // eslint-disable-line
+  // eslint-disable-next-line
   let expectedOutput;
 
   beforeEach(() => {
     const expectedPath = getFixturePath(`${expectedFileName}.txt`);
-    // eslint-disable-line
+    // eslint-disable-next-line
     expectedOutput = read(expectedPath);
   });
 
