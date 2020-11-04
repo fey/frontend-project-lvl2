@@ -3,10 +3,6 @@ import _ from 'lodash';
 const makeIndent = (level) => '    '.repeat(level);
 
 const stringify = (value, depthLevel) => {
-  if (_.isArray(value)) {
-    return `[ ${value.join(', ')} ]`;
-  }
-
   if (!_.isPlainObject(value)) {
     return value;
   }
@@ -21,39 +17,35 @@ const stringify = (value, depthLevel) => {
 };
 
 const format = (diffTree) => {
-  const iter = (nodes, depthLevel = 0) => {
-    const lines = nodes.map(({
-      name,
-      type,
-      oldValue,
-      newValue,
-      children,
-    }) => {
-      const indent = makeIndent(depthLevel);
-      switch (type) {
-        case 'deleted':
-          return `${indent}  - ${name}: ${stringify(oldValue, depthLevel + 1)}`;
-        case 'added':
-          return `${indent}  + ${name}: ${stringify(newValue, depthLevel + 1)}`;
-        case 'unchanged':
-          return `${indent}    ${name}: ${stringify(oldValue, depthLevel + 1)}`;
-        case 'changed':
-          return [
-            `${indent}  - ${name}: ${stringify(oldValue, depthLevel + 1)}`,
-            `${indent}  + ${name}: ${stringify(newValue, depthLevel + 1)}`,
-          ];
-        case 'nested':
-          return [
-            `${indent}    ${name}: {`,
-            iter(children, depthLevel + 1),
-            `${makeIndent(depthLevel + 1)}}`];
-        default:
-          throw new Error('Unknown node type');
-      }
-    });
-
-    return _.flattenDeep(lines);
-  };
+  const iter = (nodes, depthLevel = 0) => _.flatMapDeep(nodes, ({
+    name,
+    type,
+    oldValue,
+    newValue,
+    children,
+  }) => {
+    const indent = makeIndent(depthLevel);
+    switch (type) {
+      case 'deleted':
+        return `${indent}  - ${name}: ${stringify(oldValue, depthLevel + 1)}`;
+      case 'added':
+        return `${indent}  + ${name}: ${stringify(newValue, depthLevel + 1)}`;
+      case 'unchanged':
+        return `${indent}    ${name}: ${stringify(oldValue, depthLevel + 1)}`;
+      case 'changed':
+        return [
+          `${indent}  - ${name}: ${stringify(oldValue, depthLevel + 1)}`,
+          `${indent}  + ${name}: ${stringify(newValue, depthLevel + 1)}`,
+        ];
+      case 'nested':
+        return [
+          `${indent}    ${name}: {`,
+          iter(children, depthLevel + 1),
+          `${makeIndent(depthLevel + 1)}}`];
+      default:
+        throw new Error(`Unknown node type: ${type}`);
+    }
+  });
 
   const lines = iter(diffTree);
 

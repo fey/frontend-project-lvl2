@@ -25,11 +25,7 @@ const buildDiff = (dataset1, dataset2) => {
       };
     }
 
-    if (_.isEqual(oldValue, newValue)) {
-      return { name, type: 'unchanged', oldValue };
-    }
-
-    throw new Error('Unknown node type');
+    return { name, type: 'unchanged', oldValue };
   });
 
   return diff;

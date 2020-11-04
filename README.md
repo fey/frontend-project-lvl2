@@ -1,5 +1,5 @@
 ### Hexlet tests and linter status:
-[![Actions Status](https://github.com/fey/frontend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/{owner}/{repo}/actions)
+<a href="https://github.com/fey/frontend-project-lvl2/actions"><img src="https://github.com/fey/frontend-project-lvl2/workflows/hexlet-check/badge.svg" alt="Actions Status"></a>
 
 <a href="https://codeclimate.com/github/fey/frontend-project-lvl2/maintainability"><img src="https://api.codeclimate.com/v1/badges/68beae1c23a987a101cf/maintainability" /></a>
 <img src="https://github.com/fey/frontend-project-lvl2/workflows/CI/badge.svg" /> <a href="https://codeclimate.com/github/fey/frontend-project-lvl2/test_coverage"><img src="https://api.codeclimate.com/v1/badges/68beae1c23a987a101cf/test_coverage" /></a>
